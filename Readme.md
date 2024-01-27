@@ -4,7 +4,7 @@
 
 Extract Rectangle Service is a Flask-based microservice that processes `.png` images to identify and extract the coordinates of black rectangular shapes. The service is designed to handle images containing only black and white pixels, where the rectangles are black. It returns a JSON list of objects, each containing a unique identifier and the coordinates of the rectangle corners.
 
-### Note on Image Processing
+### Notes on Image Processing
 
 - The rectangles are sorted from left to right based on the position of their top-left and bottom-left corners. Priority is given to rectangles higher in the image (lower y-axis value) if corners align on the x-axis.
 - The service processes images in memory and removes them post-processing to handle concurrent requests efficiently and avoid scalability concerns.
