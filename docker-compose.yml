@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  rect_extraction_service:
+    build: .
+    ports:
+      - "${FLASK_PORT:-5001}:5000"
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/__pycache__
+      - /tmp
+    environment:
+      - FLASK_APP=rect_extraction.py
+      - FLASK_ENV=development
+      - FLASK_PORT=${FLASK_PORT:-5001}
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://host.docker.internal:${FLASK_PORT:-5001}"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+  test_service:
+    depends_on:
+      - rect_extraction_service
+    build: .
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/__pycache__
+      - /tmp
+      - ./tests/coordinates.json:/usr/src/app/coordinates.json
+      - ./test_images:/usr/src/app/test_images
+    environment:
+      - FLASK_APP=rect_extraction.py
+      - TEST_PORT=${TEST_PORT:-5001}
+    command: python -m unittest discover -s tests
